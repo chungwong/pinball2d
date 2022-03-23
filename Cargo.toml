@@ -6,10 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.6"
-# bevy_rapier2d = "0.12.1"
-bevy_rapier2d = { git = "https://github.com/dimforge/bevy_rapier", tag = "v0.12.1" }
+bevy = { version = "0.6", features = ["dynamic"] }
+bevy_rapier2d = "0.12.1"
 bevy_prototype_lyon = "0.4.0"
-
-#[profile.release]
-#opt-level = 's'
+heron = { version = "2.0.0", features = ["2d"] }

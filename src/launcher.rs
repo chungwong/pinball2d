@@ -8,7 +8,7 @@ pub struct LauncherPlugin;
 impl Plugin for LauncherPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_startup_system(spawn_launcher.system().after("walls").label("launcher"))
+            .add_startup_system(spawn_launcher.system().after("main_setup").label("launcher"))
             .add_system(launcher_movement.system());
     }
 }
