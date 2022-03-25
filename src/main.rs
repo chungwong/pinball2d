@@ -9,6 +9,13 @@ use ball::*;
 mod walls;
 use walls::*;
 
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+pub enum AppState {
+    SettingUpVariables,
+    SettingUpWorld,
+    SetUp,
+}
+
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
@@ -19,23 +26,26 @@ fn main() {
         })
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
-        .add_plugin(BallPlugin)
-        .add_plugin(WallsPlugin)
-        .add_plugin(ShapePlugin)
-        .add_startup_system(setup.label("main_setup"))
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+        .add_plugin(ShapePlugin)
+        .add_plugin(WallsPlugin)
+        .add_plugin(BallPlugin)
+        .add_state(AppState::SettingUpVariables)
+        .add_system_set(SystemSet::on_update(AppState::SettingUpVariables).with_system(setup))
         .run();
 }
 
-fn setup(mut commands: Commands, mut rapier_config: ResMut<RapierConfiguration>) {
-    // Set gravity to x and spawn camera.
-    //rapier_config.gravity = Vector2::zeros();
-    rapier_config.gravity = Vector2::new(0.0, 0.0);
-
+fn setup(
+    mut commands: Commands,
+    mut rapier_config: ResMut<RapierConfiguration>,
+    mut app_state: ResMut<State<AppState>>,
+) {
     commands
         .spawn()
         .insert_bundle(OrthographicCameraBundle::new_2d());
 
+    rapier_config.gravity = Vector2::zeros();
     rapier_config.scale = 640.0 / 1.0;
-}
 
+    app_state.set(AppState::SettingUpWorld).unwrap();
+}
