@@ -3,13 +3,15 @@ use bevy_prototype_lyon::prelude::*;
 use bevy_rapier2d::prelude::*;
 use nalgebra::Point2;
 
+use crate::AppState;
+
 pub struct BallPlugin;
 
 const BALL_RADIUS: f32 = 30.;
 
 impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_ball.label("ball"))
+        app.add_system_set(SystemSet::on_enter(AppState::SetUp).with_system(spawn_ball.label("ball")))
         // .add_system(display_events)
         ;
     }
@@ -67,12 +69,15 @@ fn spawn_ball(mut commands: Commands, rapier_config: ResMut<RapierConfiguration>
 /* A system that displays the events. */
 fn display_events(
     mut contact_events: EventReader<ContactEvent>,
-    ball: Query<&Transform, With<Ball>>
+    ball: Query<&Transform, With<Ball>>,
 ) {
     for contact_event in contact_events.iter() {
         if matches!(contact_event, ContactEvent::Started(..)) {
             let b = ball.get_single().unwrap();
-            println!("Received contact event: {:?} {:?}", contact_event, b.translation);
+            println!(
+                "Received contact event: {:?} {:?}",
+                contact_event, b.translation
+            );
         }
     }
 }
