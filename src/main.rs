@@ -31,7 +31,7 @@ fn main() {
         .add_plugin(WallsPlugin)
         .add_plugin(BallPlugin)
         .add_state(AppState::SettingUpVariables)
-        .add_system_set(SystemSet::on_update(AppState::SettingUpVariables).with_system(setup))
+        .add_system_set(SystemSet::on_enter(AppState::SettingUpVariables).with_system(setup))
         .run();
 }
 
